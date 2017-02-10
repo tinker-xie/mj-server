@@ -1,0 +1,370 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="itemDao">
+
+    <resultMap id="ItemResult" type="Item" autoMapping="true">
+        <id column="id" property="id" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="category_id1" column="category_id1" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="category_id2" column="category_id2" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_remain" column="is_remain" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_online" column="is_online" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_active" column="is_active" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_rough" column="is_rough" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_promote" column="is_promote" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="is_delete" column="is_delete" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="weight" column="weight" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="order_quantity" column="order_quantity" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="max_quantity" column="max_quantity" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="market_price" column="market_price" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="shop_price" column="shop_price" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="promote_price" column="promote_price" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="remain" column="remain" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="sale_num" column="sale_num" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="promote_end" column="promote_end" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="created_at" column="created_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="updated_at" column="updated_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="deleted_at" column="deleted_at" javaType="Date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getById" resultMap="ItemResult">
+        SELECT * FROM goods
+        where id=#{id}
+    </select>
+
+    <select id="getAll" resultMap="ItemResult">
+        SELECT * FROM goods WHERE is_delete = 0
+    </select>
+
+    <select id="getAllCanShow" resultMap="ItemResult">
+        SELECT * FROM goods  WHERE is_delete = 0 and is_online = 1
+    </select>
+
+    <select id="getByCategory" resultMap="ItemResult">
+        SELECT * FROM goods WHERE is_delete = 0 and is_online = 1
+        <if test="level1!=null">
+            and category_id1=#{level1}
+        </if>
+        <if test="level2!=null">
+            and category_id2=#{level2}
+        </if>
+    </select>
+
+    <select id="count" parameterType="Boolean">
+        SELECT count(1) FROM goods WHERE is_delete = 0
+        <if test="all">
+            and is_online = 1
+        </if>
+    </select>
+
+    <insert id="insert" parameterType="Item">
+        INSERT INTO goods (
+        <trim prefix="" prefixOverrides="," suffixOverrides="," suffix="">
+            <if test="no!=null">
+                ,no
+            </if>
+            <if test="name!=null">
+                ,name
+            </if>
+            <if test="category_id1!=null">
+                ,category_id1
+            </if>
+            <if test="category_id2!=null">
+                ,category_id2
+            </if>
+            <if test="is_remain!=null">
+                ,is_remain
+            </if>
+            <if test="is_online!=null">
+                ,is_online
+            </if>
+            <if test="is_active!=null">
+                ,is_active
+            </if>
+            <if test="is_rough!=null">
+                ,is_rough
+            </if>
+            <if test="is_promote!=null">
+                ,is_promote
+            </if>
+            <if test="is_delete!=null">
+                ,is_delete
+            </if>
+            <if test="status!=null">
+                ,status
+            </if>
+            <if test="promote_end!=null">
+                ,promote_end
+            </if>
+            <if test="order!=null">
+                ,order
+            </if>
+            <if test="weight!=null">
+                ,weight
+            </if>
+            <if test="order_quantity!=null">
+                ,order_quantity
+            </if>
+            <if test="max_quantity!=null">
+                ,max_quantity
+            </if>
+            <if test="market_price!=null">
+                ,market_price
+            </if>
+            <if test="shop_price!=null">
+                ,shop_price
+            </if>
+            <if test="promote_price!=null">
+                ,promote_price
+            </if>
+            <if test="remain!=null">
+                ,remain
+            </if>
+            <if test="sale_num!=null">
+                ,sale_num
+            </if>
+            <if test="quanlity!=null">
+                ,quanlity
+            </if>
+            <if test="unit!=null">
+                ,unit
+            </if>
+            <if test="unit_sell!=null">
+                ,unit_sell
+            </if>
+            <if test="unitDesc!=null">
+                ,unitDesc
+            </if>
+            <if test="src!=null">
+                ,src
+            </if>
+            <if test="thumb!=null">
+                ,thumb
+            </if>
+            <if test="place!=null">
+                ,place
+            </if>
+            <if test="summary!=null">
+                ,summary
+            </if>
+            <if test="notice!=null">
+                ,notice
+            </if>
+            <if test="description!=null">
+                ,description
+            </if>
+            ,created_at
+            ,updated_at
+        </trim>
+        ) VALUES (
+        <trim suffix="" suffixOverrides="," prefix="" prefixOverrides=",">
+            <if test="no!=null">
+                ,#{no}
+            </if>
+            <if test="name!=null">
+                ,#{name}
+            </if>
+            <if test="category_id1!=null">
+                ,#{category_id1}
+            </if>
+            <if test="category_id2!=null">
+                ,#{category_id2}
+            </if>
+            <if test="is_remain!=null">
+                ,#{is_remain}
+            </if>
+            <if test="is_online!=null">
+                ,#{is_online}
+            </if>
+            <if test="is_active!=null">
+                ,#{is_active}
+            </if>
+            <if test="is_rough!=null">
+                ,#{is_rough}
+            </if>
+            <if test="is_promote!=null">
+                ,#{is_promote}
+            </if>
+            <if test="is_delete!=null">
+                ,#{is_delete}
+            </if>
+            <if test="status!=null">
+                ,#{status}
+            </if>
+            <if test="promote_end!=null">
+                ,#{promote_end}
+            </if>
+            <if test="order!=null">
+                ,#{order}
+            </if>
+            <if test="weight!=null">
+                ,#{weight}
+            </if>
+            <if test="order_quantity!=null">
+                ,#{order_quantity}
+            </if>
+            <if test="max_quantity!=null">
+                ,#{max_quantity}
+            </if>
+            <if test="market_price!=null">
+                ,#{market_price}
+            </if>
+            <if test="shop_price!=null">
+                ,#{shop_price}
+            </if>
+            <if test="promote_price!=null">
+                ,#{promote_price}
+            </if>
+            <if test="remain!=null">
+                ,#{remain}
+            </if>
+            <if test="sale_num!=null">
+                ,#{sale_num}
+            </if>
+            <if test="quanlity!=null">
+                ,#{quanlity}
+            </if>
+            <if test="unit!=null">
+                ,#{unit}
+            </if>
+            <if test="unit_sell!=null">
+                ,#{unit_sell}
+            </if>
+            <if test="unitDesc!=null">
+                ,#{unitDesc}
+            </if>
+            <if test="src!=null">
+                ,#{src}
+            </if>
+            <if test="thumb!=null">
+                ,#{thumb}
+            </if>
+            <if test="place!=null">
+                ,#{place}
+            </if>
+            <if test="summary!=null">
+                ,#{summary}
+            </if>
+            <if test="notice!=null">
+                ,#{notice}
+            </if>
+            <if test="description!=null">
+                ,#{description}
+            </if>
+            ,now()
+            ,now()
+        </trim>
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE goods set
+        <trim prefixOverrides="," prefix="" suffix="" suffixOverrides=",">
+            <if test="no!=null">
+                no=#{no}
+            </if>
+            <if test="name!=null">
+                name=#{name}
+            </if>
+            <if test="category_id1!=null">
+                category_id1=#{category_id1}
+            </if>
+            <if test="category_id2!=null">
+                category_id2=#{category_id2}
+            </if>
+            <if test="is_remain!=null">
+                is_remain=#{is_remain}
+            </if>
+            <if test="is_online!=null">
+                is_online=#{is_online}
+            </if>
+            <if test="is_active!=null">
+                is_active=#{is_active}
+            </if>
+            <if test="is_rough!=null">
+                is_rough=#{is_rough}
+            </if>
+            <if test="is_promote!=null">
+                is_promote=#{is_promote}
+            </if>
+            <if test="is_delete!=null">
+                is_delete=#{is_delete}
+            </if>
+            <if test="status!=null">
+                status=#{status}
+            </if>
+            <if test="promote_end!=null">
+                promote_end=#{promote_end}
+            </if>
+            <if test="order!=null">
+                order=#{order}
+            </if>
+            <if test="weight!=null">
+                weight=#{weight}
+            </if>
+            <if test="order_quantity!=null">
+                order_quantity=#{order_quantity}
+            </if>
+            <if test="max_quantity!=null">
+                max_quantity=#{max_quantity}
+            </if>
+            <if test="market_price!=null">
+                market_price=#{market_price}
+            </if>
+            <if test="shop_price!=null">
+                shop_price=#{shop_price}
+            </if>
+            <if test="promote_price!=null">
+                promote_price=#{promote_price}
+            </if>
+            <if test="remain!=null">
+                remain=#{remain}
+            </if>
+            <if test="sale_num!=null">
+                sale_num=#{sale_num}
+            </if>
+            <if test="quanlity!=null">
+                quanlity=#{quanlity}
+            </if>
+            <if test="unit!=null">
+                unit=#{unit}
+            </if>
+            <if test="unit_sell!=null">
+                unit_sell=#{unit_sell}
+            </if>
+            <if test="unitDesc!=null">
+                unitDesc=#{unitDesc}
+            </if>
+            <if test="src!=null">
+                src=#{src}
+            </if>
+            <if test="thumb!=null">
+                thumb=#{thumb}
+            </if>
+            <if test="place!=null">
+                place=#{place}
+            </if>
+            <if test="summary!=null">
+                summary=#{summary}
+            </if>
+            <if test="notice!=null">
+                notice=#{notice}
+            </if>
+            <if test="description!=null">
+                description=#{description}
+            </if>
+            ,updated_at=now()
+        </trim>
+        where id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM goods WHERE id=#{id}
+    </delete>
+
+    <update id="softDelete">
+        UPDATE goods set deleted_at=now() WHERE id=#{id}
+    </update>
+
+
+</mapper>

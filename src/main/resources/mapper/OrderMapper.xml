@@ -1,0 +1,313 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OrderDao">
+
+    <resultMap id="OrderResult" type="Order" autoMapping="true">
+        <id column="id" property="id" javaType="Integer" jdbcType="INTEGER"/>
+        <result property="order_amount" column="order_amount" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="order_weight" column="order_weight" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="order_amount_real" column="order_amount_real" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="order_money_real" column="order_money_real" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="bonus" column="bonus" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="point" column="point" javaType="Double" jdbcType="DECIMAL"/>
+        <result property="send_date" column="send_date" javaType="java.sql.Date" jdbcType="DATE"/>
+        <result property="time_start" column="time_start" javaType="java.sql.Time" jdbcType="TIME"/>
+        <result property="time_end" column="time_end" javaType="java.sql.Time" jdbcType="TIME"/>
+        <result property="created_at" column="created_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="updated_at" column="updated_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result property="deleted_at" column="deleted_at" javaType="Date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getById" resultMap="OrderResult">
+        SELECT * FROM `order`
+        where id=#{id}
+    </select>
+
+    <select id="getAll" resultMap="OrderResult">
+        SELECT * FROM `order`
+    </select>
+
+    <select id="getAllByUid" resultMap="OrderResult">
+        SELECT * FROM `order` WHERE uid=#{uid}
+    </select>
+
+    <select id="countByUid" resultType="Integer">
+        SELECT count(1) FROM `order` WHERE uid=#{uid}
+    </select>
+
+    <insert id="insert" parameterType="Item">
+        INSERT INTO `order` (
+        <trim prefixOverrides="," prefix="" suffix="" suffixOverrides=",">
+            <if test="NO!=null">
+                ,NO
+            </if>
+            <if test="uid!=null">
+                ,uid
+            </if>
+            <if test="confirmed!=null">
+                ,confirmed
+            </if>
+            <if test="order_status!=null">
+                ,order_status
+            </if>
+            <if test="pay_status!=null">
+                ,pay_status
+            </if>
+            <if test="ship_status!=null">
+                ,ship_status
+            </if>
+            <if test="package_status!=null">
+                ,package_status
+            </if>
+            <if test="order_amount!=null">
+                ,order_amount
+            </if>
+            <if test="order_weight!=null">
+                ,order_weight
+            </if>
+            <if test="order_money!=null">
+                ,order_money
+            </if>
+            <if test="order_amount_real!=null">
+                ,order_amount_real
+            </if>
+            <if test="order_money_real!=null">
+                ,order_money_real
+            </if>
+            <if test="bonus_id!=null">
+                ,bonus_id
+            </if>
+            <if test="bonus!=null">
+                ,bonus
+            </if>
+            <if test="point!=null">
+                ,point
+            </if>
+            <if test="payment!=null">
+                ,payment
+            </if>
+            <if test="send_date!=null">
+                ,send_date
+            </if>
+            <if test="time_start!=null">
+                ,time_start
+            </if>
+            <if test="time_end!=null">
+                ,time_end
+            </if>
+            <if test="address_id!=null">
+                ,address_id
+            </if>
+            <if test="mobile!=null">
+                ,mobile
+            </if>
+            <if test="receiver!=null">
+                ,receiver
+            </if>
+            <if test="city!=null">
+                ,city
+            </if>
+            <if test="district!=null">
+                ,district
+            </if>
+            <if test="road!=null">
+                ,road
+            </if>
+            <if test="address!=null">
+                ,address
+            </if>
+            <if test="message!=null">
+                ,message
+            </if>
+            ,created_at
+            ,updated_at
+        </trim>
+        ) VALUES (
+        <trim prefixOverrides="," prefix="" suffix="" suffixOverrides=",">
+            <if test="NO!=null">
+                ,#{NO}
+            </if>
+            <if test="uid!=null">
+                ,#{uid}
+            </if>
+            <if test="confirmed!=null">
+                ,#{confirmed}
+            </if>
+            <if test="order_status!=null">
+                ,#{order_status}
+            </if>
+            <if test="pay_status!=null">
+                ,#{pay_status}
+            </if>
+            <if test="ship_status!=null">
+                ,#{ship_status}
+            </if>
+            <if test="package_status!=null">
+                ,#{package_status}
+            </if>
+            <if test="order_amount!=null">
+                ,#{order_amount}
+            </if>
+            <if test="order_weight!=null">
+                ,#{order_weight}
+            </if>
+            <if test="order_money!=null">
+                ,#{order_money}
+            </if>
+            <if test="order_amount_real!=null">
+                ,#{order_amount_real}
+            </if>
+            <if test="order_money_real!=null">
+                ,#{order_money_real}
+            </if>
+            <if test="bonus_id!=null">
+                ,#{bonus_id}
+            </if>
+            <if test="bonus!=null">
+                ,#{bonus}
+            </if>
+            <if test="point!=null">
+                ,#{point}
+            </if>
+            <if test="payment!=null">
+                ,#{payment}
+            </if>
+            <if test="send_date!=null">
+                ,#{send_date}
+            </if>
+            <if test="time_start!=null">
+                ,#{time_start}
+            </if>
+            <if test="time_end!=null">
+                ,#{time_end}
+            </if>
+            <if test="address_id!=null">
+                ,#{address_id}
+            </if>
+            <if test="mobile!=null">
+                ,#{mobile}
+            </if>
+            <if test="receiver!=null">
+                ,#{receiver}
+            </if>
+            <if test="city!=null">
+                ,#{city}
+            </if>
+            <if test="district!=null">
+                ,#{district}
+            </if>
+            <if test="road!=null">
+                ,#{road}
+            </if>
+            <if test="address!=null">
+                ,#{address}
+            </if>
+            <if test="message!=null">
+                ,#{message}
+            </if>
+            ,now()
+            ,now()
+        </trim>
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE `order` set
+        <trim prefixOverrides="," prefix="" suffixOverrides="," suffix="">
+            <if test="NO!=null">
+                ,NO=#{NO}
+            </if>
+            <if test="uid!=null">
+                ,uid=#{uid}
+            </if>
+            <if test="confirmed!=null">
+                ,confirmed=#{confirmed}
+            </if>
+            <if test="order_status!=null">
+                ,order_status=#{order_status}
+            </if>
+            <if test="pay_status!=null">
+                ,pay_status=#{pay_status}
+            </if>
+            <if test="ship_status!=null">
+                ,ship_status=#{ship_status}
+            </if>
+            <if test="package_status!=null">
+                ,package_status=#{package_status}
+            </if>
+            <if test="order_amount!=null">
+                ,order_amount=#{order_amount}
+            </if>
+            <if test="order_weight!=null">
+                ,order_weight=#{order_weight}
+            </if>
+            <if test="order_money!=null">
+                ,order_money=#{order_money}
+            </if>
+            <if test="order_amount_real!=null">
+                ,order_amount_real=#{order_amount_real}
+            </if>
+            <if test="order_money_real!=null">
+                ,order_money_real=#{order_money_real}
+            </if>
+            <if test="bonus_id!=null">
+                ,bonus_id=#{bonus_id}
+            </if>
+            <if test="bonus!=null">
+                ,bonus=#{bonus}
+            </if>
+            <if test="point!=null">
+                ,point=#{point}
+            </if>
+            <if test="payment!=null">
+                ,payment=#{payment}
+            </if>
+            <if test="send_date!=null">
+                ,send_date=#{send_date}
+            </if>
+            <if test="time_start!=null">
+                ,time_start=#{time_start}
+            </if>
+            <if test="time_end!=null">
+                ,time_end=#{time_end}
+            </if>
+            <if test="address_id!=null">
+                ,address_id=#{address_id}
+            </if>
+            <if test="mobile!=null">
+                ,mobile=#{mobile}
+            </if>
+            <if test="receiver!=null">
+                ,receiver=#{receiver}
+            </if>
+            <if test="city!=null">
+                ,city=#{city}
+            </if>
+            <if test="district!=null">
+                ,district=#{district}
+            </if>
+            <if test="road!=null">
+                ,road=#{road}
+            </if>
+            <if test="address!=null">
+                ,address=#{address}
+            </if>
+            <if test="message!=null">
+                ,message=#{message}
+            </if>
+            ,updated_at=now()
+        </trim>
+        where id=#{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM `order` WHERE id=#{id}
+    </delete>
+
+    <update id="softDelete">
+        UPDATE `order` set deleted_at=now() WHERE id=#{id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1600"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script type="text/javascript" src="js/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="js/dist/placeholder.min.js"></script>
+
+    <title>微信商城服务</title>
+</head>
+
+
+<body>
+
+<form id="slick-login" th:action="@{/login}" method="POST">
+    <div th:if="${param.error}">
+        用户名或密码错
+    </div>
+    <div th:if="${param.logout}">
+        您已注销成功
+    </div>
+    <label th:for="username">username</label>
+    <input type="text" name="username" class="placeholder" placeholder="me@tutsplus.com">
+    <label th:for="password">password</label>
+    <input type="password" name="password" class="placeholder" placeholder="password">
+    <input type="submit" value="登陆">
+</form>
+
+</body>
+
+</html>

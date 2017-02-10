@@ -1,0 +1,136 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userDao">
+    <resultMap id="UserResult" type="User" autoMapping="true">
+        <id column="id" property="id" javaType="Integer" jdbcType="INTEGER"/>
+        <result column="created_at" property="created_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updated_at" javaType="Date" jdbcType="TIMESTAMP"/>
+        <result column="deleted_at" property="deleted_at" javaType="Date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="getById" resultMap="UserResult">
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+    </select>
+
+    <select id="getByName" resultMap="UserResult">
+        SELECT *
+        FROM users
+        WHERE name = #{name}
+    </select>
+
+    <select id="getAll" resultMap="UserResult">
+        SELECT *
+        FROM users
+    </select>
+
+    <insert id="insert" parameterType="User">
+        INSERT INTO users(
+        <trim prefixOverrides="," prefix="" suffix="" suffixOverrides=",">
+            <if test="name!=null">
+                ,name
+            </if>
+            <if test="mobile!=null">
+                ,mobile
+            </if>
+            <if test="email!=null">
+                ,email
+            </if>
+            <if test="wx!=null">
+                ,wx
+            </if>
+            <if test="lock!=null">
+                ,lock
+            </if>
+            <if test="verified!=null">
+                ,verified
+            </if>
+            <if test="description!=null">
+                ,description
+            </if>
+            <if test="password!=null">
+                ,password
+            </if>
+            <if test="remember_token!=null">
+                ,remember_token
+            </if>
+            ,created_at
+            ,updated_at
+        </trim>
+        ) VALUES (
+        <trim prefixOverrides="," prefix="" suffix="" suffixOverrides=",">
+            <if test="name!=null">
+                ,#{name}
+            </if>
+            <if test="mobile!=null">
+                ,#{mobile}
+            </if>
+            <if test="email!=null">
+                ,#{email}
+            </if>
+            <if test="wx!=null">
+                ,#{wx}
+            </if>
+            <if test="lock!=null">
+                ,#{lock}
+            </if>
+            <if test="verified!=null">
+                ,#{verified}
+            </if>
+            <if test="description!=null">
+                ,#{description}
+            </if>
+            <if test="password!=null">
+                ,#{password}
+            </if>
+            <if test="remember_token!=null">
+                ,#{remember_token}
+            </if>
+            ,now()
+            ,now()
+        </trim>
+        )
+    </insert>
+
+    <update id="update" parameterType="User">
+        UPDATE users set
+        <trim prefixOverrides="," prefix="" suffixOverrides="," suffix="">
+            <if test="name!=null">
+                ,name=#{name}
+            </if>
+            <if test="mobile!=null">
+                ,mobile=#{mobile}
+            </if>
+            <if test="email!=null">
+                ,email=#{email}
+            </if>
+            <if test="wx!=null">
+                ,wx=#{wx}
+            </if>
+            <if test="lock!=null">
+                ,lock=#{lock}
+            </if>
+            <if test="verified!=null">
+                ,verified=#{verified}
+            </if>
+            <if test="description!=null">
+                ,description=#{description}
+            </if>
+            <if test="password!=null">
+                ,password=#{password}
+            </if>
+            <if test="remember_token!=null">
+                ,remember_token=#{remember_token}
+            </if>
+            ,updated_at=now()
+        </trim>
+    </update>
+
+    <delete id="delete">
+        DELETE FROM users WHERE id=#{id}
+    </delete>
+
+    <update id="softDelete">
+        UPDATE users set deleted_at=now() WHERE id=#{id}
+    </update>
+</mapper>
