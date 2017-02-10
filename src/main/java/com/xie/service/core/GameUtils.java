@@ -1,135 +1,97 @@
 package com.xie.service.core;
 
-import com.xie.utils.FieldValueUtils;
-
 import java.util.Arrays;
+import java.util.Random;
 import java.util.TreeMap;
 
 /**
- * Created by xie on 16/8/23.
+ * @Author xie
+ * @Date 17/2/10 下午4:11.
  */
-public class GameHelper {
+public class GameUtils {
+    public final static int TOTAL = 34;
 
     static final int[] n_zero;
     static final TreeMap<Integer, int[]> tbl;
 
     static {
-        n_zero = new int[34];
+        n_zero = new int[TOTAL];
         Arrays.fill(n_zero, 0);
         tbl = new TreeMap<Integer, int[]>();
         init(tbl);
     }
 
-    public static void analysing(PAI[] pai) {
-
-        System.out.println("-------------  初始化牌型  ---------");
-        for (int i = 0; i < pai.length; i++) {
-            System.out.print(FieldValueUtils.get(pai[i]) + ",");
-        }
-
-        int[] src = analyse(pai);
-        System.out.println();
-        System.out.println("-------------  红中个数  ---------");
-        System.out.println(src[PAI.ZH.getCode()]);
-
-        System.out.println("-------------  分析开始  ---------");
-        long time = System.currentTimeMillis();
-        int[] out = startWork(src);
-        System.out.println("总共耗时:" + (System.currentTimeMillis() - time));
-//        StringBuilder builder = new StringBuilder();
-//        for (int i = 0; i < out.length; i++) {
-//            builder.append(out[i] + " --> " + (agari(out[i]) != null ? "胡了" : "不胡"));
-//            builder.append("\r\n");
-//        }
-//        builder.deleteCharAt(builder.length() - 1);
-//        System.out.println(builder.toString());
-
+    /**
+     * 随机排序,打乱牌
+     *
+     * @param in
+     * @return
+     * @nodoc
+     * @summary
+     * @version v1
+     * @Date 2017-02-10
+     * @Since 2017-02-10
+     * @author xiejiangchu
+     * @Copyright (c) 2017, Lianjia All Rights Reserved.
+     */
+    public static int[] wash(int[] in) {
+        int[] out = new int[in.length];
+        int count = in.length;
+        int cbRandCount = 0;// 索引
+        int cbPosition = 0;// 位置
+        int k = 0;
+        do {
+            Random rand = new Random();
+            int r = count - cbRandCount;
+            cbPosition = rand.nextInt(r);
+            out[k++] = in[cbPosition];
+            cbRandCount++;
+            in[cbPosition] = in[r - 1];
+        } while (cbRandCount < count);
+        return out;
     }
 
+    /**
+     * 快速排序
+     *
+     * @param null
+     * @return
+     * @nodoc
+     * @summary
+     * @version v1
+     * @Date 2017-02-10
+     * @Since 2017-02-10
+     * @author xiejiangchu
+     * @Copyright (c) 2017, Lianjia All Rights Reserved.
+     */
+    private static void sort(int[] a, int low, int high) {
+        int start = low;
+        int end = high;
+        int key = a[low];
 
-    private static void reflectPai(int[] count, int result) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count.length; i++) {
-            for (int j = 0; j < count[i]; j++) {
-                builder.append(getName(i));
-                builder.append(",");
+        while (end > start) {
+            //从后往前比较
+            while (end > start && a[end] >= key)  //如果没有比关键值小的，比较下一个，直到有比关键值小的交换位置，然后又从前往后比较
+                end--;
+            if (a[end] <= key) {
+                int temp = a[end];
+                a[end] = a[start];
+                a[start] = temp;
             }
-        }
-        builder.deleteCharAt(builder.length() - 1);
-        builder.append("   -->   ");
-        if (agari(result) != null) {
-            builder.append(result + " -->  胡了");
-            System.out.println(builder.toString());
-        }
-    }
-
-    private static int[] startWork(int[] src) {
-        int result = 0;
-        int[] count = Arrays.copyOf(src, src.length);
-        if (count[PAI.ZH.getCode()] == 0) {
-            result = calc_key(count);
-            int[] n = {result};
-            reflectPai(count, result);
-            return n;
-        } else if (count[PAI.ZH.getCode()] == 1) {
-            int[] n = new int[27];
-            for (int t = 0; t < 27; t++) {
-                count = Arrays.copyOf(src, src.length);
-                count[t]++;
-                count[PAI.ZH.getCode()] = 0;
-                result = calc_key(count);
-                n[t] = result;
-                reflectPai(count, result);
+            //从前往后比较
+            while (end > start && a[start] <= key)//如果没有比关键值大的，比较下一个，直到有比关键值大的交换位置
+                start++;
+            if (a[start] >= key) {
+                int temp = a[start];
+                a[start] = a[end];
+                a[end] = temp;
             }
-            return n;
-        } else if (count[PAI.ZH.getCode()] == 2) {
-            int[] n = new int[27 * 27];
-            for (int t = 0; t < 27; t++) {
-                for (int k = 0; k < 27; k++) {
-                    count = Arrays.copyOf(src, src.length);
-                    count[t]++;
-                    count[k]++;
-                    count[PAI.ZH.getCode()] = 0;
-                    result = calc_key(count);
-                    n[t * 27 + k] = result;
-                    reflectPai(count, result);
-                }
-            }
-            return n;
-        } else if (count[PAI.ZH.getCode()] == 3) {
-            int[] n = new int[27 * 27 * 27];
-            for (int t = 0; t < 27; t++) {
-                for (int k = 0; k < 27; k++) {
-                    for (int m = 0; m < 27; m++) {
-                        count = Arrays.copyOf(src, src.length);
-                        count[t]++;
-                        count[k]++;
-                        count[m]++;
-                        count[PAI.ZH.getCode()] = 0;
-                        result = calc_key(count);
-                        n[t * 27 * 27 + k * 27 + m] = result;
-                        reflectPai(count, result);
-                    }
-                }
-            }
-            return n;
+            //此时第一次循环比较结束，关键值的位置已经确定了。左边的值都比关键值小，右边的值都比关键值大，但是两边的顺序还有可能是不一样的，进行下面的递归调用
         }
-        return n_zero;
+        //递归
+        if (start > low) sort(a, low, start - 1);//左边序列。第一个索引位置到关键值索引-1
+        if (end < high) sort(a, end + 1, high);//右边序列。从关键值索引+1到最后一个
     }
-
-    private static int[] agari(int key) {
-        return tbl.get(key);
-    }
-
-    private static int[] analyse(PAI[] pai) {
-        int[] n = n_zero.clone();
-
-        for (PAI i : pai) {
-            n[i.getCode()]++;
-        }
-        return n;
-    }
-
 
     private static int calc_key(int[] n) {
         int p = -1;

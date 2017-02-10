@@ -1,7 +1,5 @@
 package com.xie.service.core;
 
-import com.xie.model.bean.PAI;
-
 /**
  * Created by xie on 16/8/23.
  */

@@ -1,4 +1,4 @@
-package com.xie.model.bean;
+package com.xie.service.core;
 
 import com.xie.annotation.FieldValue;
 
