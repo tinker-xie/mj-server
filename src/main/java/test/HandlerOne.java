@@ -1,6 +1,6 @@
 package test;
 
-import com.xie.model.bean.StudentMsg;
+import com.xie.model.bean.MinaMessage;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -17,10 +17,9 @@ public class HandlerOne extends IoHandlerAdapter {
             throws Exception {
         // TODO Auto-generated method stub
         super.messageReceived(session, message);
-        StudentMsg.Student student = (StudentMsg.Student) message;
+        MinaMessage.Message student = (MinaMessage.Message) message;
         System.out.println("ID:" + student.getId());
-        System.out.println("Username:" + student.getUsername());
-        System.out.println("Password:" + student.getPassword());
+        System.out.println("Username:" + student.getData());
     }
 
     @Override

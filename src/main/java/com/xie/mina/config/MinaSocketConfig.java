@@ -2,11 +2,13 @@ package com.xie.mina.config;
 
 import com.xie.mina.coder.MinaProtobufDecoder;
 import com.xie.mina.coder.MinaProtobufEncoder;
+import com.xie.mina.core.MyKeepAliveMessageFactory;
 import com.xie.mina.core.ReceiveMinaHandle;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
 import org.apache.mina.core.filterchain.IoFilter;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.executor.ExecutorFilter;
+import org.apache.mina.filter.keepalive.KeepAliveFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.filter.logging.MdcInjectionFilter;
 import org.apache.mina.integration.beans.InetSocketAddressEditor;
@@ -36,10 +38,10 @@ public class MinaSocketConfig {
      */
     private int port;
 
-    private static Map<Class<?>,Class<? extends PropertyEditor>> customEditors = new HashMap<>();
+    private static Map<Class<?>, Class<? extends PropertyEditor>> customEditors = new HashMap<>();
 
     @Bean
-    public static CustomEditorConfigurer customEditorConfigurer(){
+    public static CustomEditorConfigurer customEditorConfigurer() {
         customEditors.put(SocketAddress.class, InetSocketAddressEditor.class);
         CustomEditorConfigurer customEditorConfigurer = new CustomEditorConfigurer();
         customEditorConfigurer.setCustomEditors(customEditors);
@@ -59,7 +61,6 @@ public class MinaSocketConfig {
     }
 
 
-
     @Bean
     public DefaultIoFilterChainBuilder defaultIoFilterChainBuilder(ExecutorFilter executorFilter, MdcInjectionFilter mdcInjectionFilter, ProtocolCodecFilter protocolCodecFilter, LoggingFilter loggingFilter) {
         DefaultIoFilterChainBuilder defaultIoFilterChainBuilder = new DefaultIoFilterChainBuilder();
@@ -67,6 +68,7 @@ public class MinaSocketConfig {
 //        filters.put("executor", executorFilter);
 //        filters.put("mdcInjectionFilter", mdcInjectionFilter);
         filters.put("codecFilter", new ProtocolCodecFilter(new MinaProtobufEncoder(), new MinaProtobufDecoder()));
+        filters.put("keepAliveFilter", new KeepAliveFilter(new MyKeepAliveMessageFactory()));
 //        filters.put("loggingFilter", loggingFilter);
         defaultIoFilterChainBuilder.setFilters(filters);
         return defaultIoFilterChainBuilder;

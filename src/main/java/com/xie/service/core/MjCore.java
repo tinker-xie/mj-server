@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class MjCore {
 
-    public static void main(String[] args) {
+    public static void mains(String[] args) {
 
         GameDispatch game=new GameDispatch(2,2);
         game.printCurrent();

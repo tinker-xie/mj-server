@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+option java_package = "com.xie.model.bean";
+option java_outer_classname = "MinaMessage";
+
+enum Type {
+    REQUEST = 1;
+    RESPONSE = 2;
+    COMMAND = 3;
+    INDICATION = 4;
+    HEART = 5;
+    OTHER = 6;
+}
+
+message Message {
+    // ID
+    required Type type = 1 [default = HEART];
+
+    required int32 id = 2;
+
+    optional string data = 3;
+}

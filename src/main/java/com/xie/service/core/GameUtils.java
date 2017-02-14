@@ -10,6 +10,7 @@ import java.util.TreeMap;
  */
 public class GameUtils {
     public final static int TOTAL = 34;
+    public final static int SYS = -1;
 
     static final int[] n_zero;
     static final TreeMap<Integer, int[]> tbl;
@@ -49,6 +50,57 @@ public class GameUtils {
             in[cbPosition] = in[r - 1];
         } while (cbRandCount < count);
         return out;
+    }
+
+
+    private static int[] assemble(int[] src) {
+        int result = 0;
+        int[] count = Arrays.copyOf(src, src.length);
+        if (count[PAI.ZH.getCode()] == 0) {
+            result = calc_key(count);
+            int[] n = {result};
+            return n;
+        } else if (count[PAI.ZH.getCode()] == 1) {
+            int[] n = new int[27];
+            for (int t = 0; t < 27; t++) {
+                count = Arrays.copyOf(src, src.length);
+                count[t]++;
+                count[PAI.ZH.getCode()] = 0;
+                result = calc_key(count);
+                n[t] = result;
+            }
+            return n;
+        } else if (count[PAI.ZH.getCode()] == 2) {
+            int[] n = new int[27 * 27];
+            for (int t = 0; t < 27; t++) {
+                for (int k = 0; k < 27; k++) {
+                    count = Arrays.copyOf(src, src.length);
+                    count[t]++;
+                    count[k]++;
+                    count[PAI.ZH.getCode()] = 0;
+                    result = calc_key(count);
+                    n[t * 27 + k] = result;
+                }
+            }
+            return n;
+        } else if (count[PAI.ZH.getCode()] == 3) {
+            int[] n = new int[27 * 27 * 27];
+            for (int t = 0; t < 27; t++) {
+                for (int k = 0; k < 27; k++) {
+                    for (int m = 0; m < 27; m++) {
+                        count = Arrays.copyOf(src, src.length);
+                        count[t]++;
+                        count[k]++;
+                        count[m]++;
+                        count[PAI.ZH.getCode()] = 0;
+                        result = calc_key(count);
+                        n[t * 27 * 27 + k * 27 + m] = result;
+                    }
+                }
+            }
+            return n;
+        }
+        return n_zero;
     }
 
     /**
