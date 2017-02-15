@@ -1,11 +1,16 @@
 package com.xie.mina.core;
 
+import com.alibaba.fastjson.JSON;
 import com.xie.model.bean.MinaMessage;
+import com.xie.model.bean.User;
+import com.xie.model.response.BaseResponse;
+import com.xie.service.UserService;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -17,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ReceiveMinaHandle extends IoHandlerAdapter {
     public final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    private UserService userService;
 
     public static ConcurrentHashMap<Long, IoSession> sessionsConcurrentHashMap = new ConcurrentHashMap<>();
 
@@ -49,15 +57,27 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
         String remoteAddress = ((InetSocketAddress) session.getRemoteAddress()).getAddress().getHostAddress();
         session.setAttribute("ip", remoteAddress);
 
-        MinaMessage.Message student = (MinaMessage.Message) message;
-        System.out.println("ID:" + student.getId());
-        System.out.println("Username:" + student.getData());
+        MinaMessage.Message msg = (MinaMessage.Message) message;
+        switch (msg.getId()) {
+            case NetManager.MSG_USER_LOGIN:
+                User user = JSON.parseObject(msg.getData(), User.class);
+                if (userService.getById(user.getId()) != null) {
+                    MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
+                    builder.setType(MinaMessage.Type.RESPONSE);
+                    builder.setId(msg.getId());
+                    builder.setData(JSON.toJSONString(BaseResponse.ok()));
+                    session.write(builder.build());
+                } else {
+                    MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
+                    builder.setType(MinaMessage.Type.RESPONSE);
+                    builder.setId(msg.getId());
+                    System.out.println(JSON.toJSONString(BaseResponse.fail()));
+                    builder.setData(JSON.toJSONString(BaseResponse.fail()));
+                    session.write(builder.build());
+                }
+                break;
+        }
 
-        MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
-        builder.setType(MinaMessage.Type.RESPONSE);
-        builder.setId(2);
-        builder.setData("success");
-        session.write(builder.build());
 
     }
 
