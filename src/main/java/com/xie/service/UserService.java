@@ -10,6 +10,8 @@ public interface UserService {
 
     User getById(int id);
 
+    User getByName(String name);
+
     PageInfo<User> getAllUsers(int pageNum, int pageSize);
 
     int insert(User user);

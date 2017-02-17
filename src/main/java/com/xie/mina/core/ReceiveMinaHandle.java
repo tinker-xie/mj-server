@@ -39,8 +39,10 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
         super.sessionCreated(session);
         LOGGER.info("remote client [" + session.getRemoteAddress().toString() + "] connected.");
         Long time = System.currentTimeMillis();
-        session.setAttribute("id", time);
         sessionsConcurrentHashMap.put(time, session);
+        String remoteAddress = ((InetSocketAddress) session.getRemoteAddress()).getAddress().getHostAddress();
+        session.setAttribute("ip", remoteAddress);
+        session.setAttribute("id", time);
     }
 
     @Override
@@ -53,15 +55,12 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
             throws Exception {
         // TODO Auto-generated method stub
 
-        session.setAttribute("type", message);
-        String remoteAddress = ((InetSocketAddress) session.getRemoteAddress()).getAddress().getHostAddress();
-        session.setAttribute("ip", remoteAddress);
-
         MinaMessage.Message msg = (MinaMessage.Message) message;
         switch (msg.getId()) {
             case NetManager.MSG_USER_LOGIN:
                 User user = JSON.parseObject(msg.getData(), User.class);
-                if (userService.getById(user.getId()) != null) {
+                User user1 = userService.getByName(user.getName());
+                if (user1 != null && user1.getPassword().equals(user.getPassword())) {
                     MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
                     builder.setType(MinaMessage.Type.RESPONSE);
                     builder.setId(msg.getId());
@@ -71,7 +70,6 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
                     MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
                     builder.setType(MinaMessage.Type.RESPONSE);
                     builder.setId(msg.getId());
-                    System.out.println(JSON.toJSONString(BaseResponse.fail()));
                     builder.setData(JSON.toJSONString(BaseResponse.fail()));
                     session.write(builder.build());
                 }

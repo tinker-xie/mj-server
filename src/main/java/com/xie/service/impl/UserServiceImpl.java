@@ -24,6 +24,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getByName(String name) {
+        return userDao.getByName(name);
+    }
+
+    @Override
     public PageInfo<User> getAllUsers(int pageNum, int pageSize) {
         PageInfo<User> page = PageHelper.startPage(pageNum, pageSize).doSelectPageInfo(() -> userDao.getAll());
         return page;
