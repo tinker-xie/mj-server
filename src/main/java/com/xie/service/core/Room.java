@@ -1,14 +1,19 @@
 package com.xie.service.core;
 
+import com.xie.model.response.GameFrame;
+import org.springframework.beans.BeanUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * @Author xie
- * @Date 17/2/10 下午3:57.
+ * @Date 17/2/17 下午3:54.
  */
-public class GameDispatch {
+public class Room {
     /**
      * 配置项
      */
@@ -19,27 +24,27 @@ public class GameDispatch {
     /**
      * 游戏参数
      */
-    private int game_current_step;
+    private int game_current_step = 0;
     private int game_current_action;
     private int game_current_person;
     private int game_next_person;
 
 
     private List<Player> players;
-    private int[] remains;
+    private Queue<PAI> paiQueue;
 
-    public GameDispatch(int game_person_number, int game_win_eggs) {
+    public Room(int game_person_number, int game_win_eggs) {
         this.game_person_number = game_person_number;
         this.game_win_eggs = game_win_eggs;
 
+        paiQueue = new ConcurrentLinkedDeque<>();
         players = new ArrayList<>(game_person_number);
 
-        setResult(0, Action.分牌.getCode(), GameUtils.SYS, GameUtils.SYS);
+        setResult(game_current_step, Action.分牌.getCode(), GameUtils.SYS, GameUtils.SYS);
 
         //初始化分牌
         init();
-
-        setResult(0, Action.分牌.getCode(), 0, 0);
+        setResult(game_current_step, Action.分牌.getCode(), 0, 0);
     }
 
     private void init() {
@@ -56,16 +61,23 @@ public class GameDispatch {
             if (i == 0) {
                 int[] first = Arrays.copyOfRange(arr, 0, 14);
                 Player player = new Player();
-                player.insertHand(first);
+                for (int k = 0; k < first.length; k++) {
+                    player.insertHand((PAI.valueOf(first[k])));
+                }
                 players.add(player);
             } else {
                 int[] other = Arrays.copyOfRange(arr, (i + 1) * 13 + 1, (i + 2) * 13 + 1);
                 Player player = new Player();
-                player.insertHand(other);
+                for (int k = 0; k < other.length; k++) {
+                    player.insertHand((PAI.valueOf(other[k])));
+                }
                 players.add(player);
             }
         }
-        remains = Arrays.copyOfRange(arr, (i) * 13 + 1, GameUtils.TOTAL * 4);
+        int[] remains = Arrays.copyOfRange(arr, (i) * 13 + 1, GameUtils.TOTAL * 4);
+        for (int k = 0; k < remains.length; k++) {
+            paiQueue.offer((PAI.valueOf(remains[k])));
+        }
     }
 
 
@@ -76,11 +88,18 @@ public class GameDispatch {
         this.game_next_person = game_next_person;
     }
 
+    public GameFrame getGameFrame(int index) {
+        GameFrame gameFrame = new GameFrame();
+        BeanUtils.copyProperties(this, gameFrame);
+        gameFrame.setPlayer(players.get(index));
+        return gameFrame;
+    }
+
 
     public void printCurrent() {
-        System.out.println("剩余:" + remains.length);
-        for (int i = 0; i < remains.length; i++) {
-            System.out.print(GameHelper.getName(remains[i]) + ",");
+        System.out.println("剩余:" + paiQueue.size());
+        for (int i = 0; i < paiQueue.size(); i++) {
+            System.out.print(paiQueue.poll() + ",");
         }
         System.out.println();
 
@@ -98,6 +117,5 @@ public class GameDispatch {
         System.out.println("当前玩家 " + game_current_person);
         System.out.println("下一玩家 " + game_next_person);
     }
-
 
 }

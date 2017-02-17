@@ -2,9 +2,6 @@ package com.xie.service.core;
 
 import com.xie.annotation.FieldValue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by xie on 16/8/23.
  */
@@ -92,6 +89,80 @@ public enum PAI {
         this.code = code;
     }
 
+
+    public static PAI valueOf(int code) {
+        switch (code) {
+            case 0:
+                return B1;
+            case 1:
+                return B2;
+            case 2:
+                return B3;
+            case 3:
+                return B4;
+            case 4:
+                return B5;
+            case 5:
+                return B6;
+            case 6:
+                return B7;
+            case 7:
+                return B8;
+            case 8:
+                return B9;
+            case 9:
+                return T1;
+            case 10:
+                return T2;
+            case 11:
+                return T3;
+            case 12:
+                return T4;
+            case 13:
+                return T5;
+            case 14:
+                return T6;
+            case 15:
+                return T7;
+            case 16:
+                return T8;
+            case 17:
+                return T9;
+            case 18:
+                return W1;
+            case 19:
+                return W2;
+            case 20:
+                return W3;
+            case 21:
+                return W4;
+            case 22:
+                return W5;
+            case 23:
+                return W6;
+            case 24:
+                return W7;
+            case 25:
+                return W8;
+            case 26:
+                return W9;
+            case 27:
+                return E;
+            case 28:
+                return S;
+            case 29:
+                return W;
+            case 30:
+                return N;
+            case 31:
+                return ZH;
+            case 32:
+                return FA;
+            case 33:
+                return BA;
+        }
+        return null;
+    }
 
 
 }

@@ -13,7 +13,7 @@ public class MjCore {
 
     public static void mains(String[] args) {
 
-        GameDispatch game=new GameDispatch(2,2);
+        Room game=new Room(2,2);
         game.printCurrent();
     }
 

@@ -8,9 +8,9 @@ import java.util.*;
  */
 public class Player {
     private static final int NULL_CODE = 100;
-    private HashMap<Integer, Integer> hand;
-    private HashMap<Integer, Integer> peng;
-    private HashMap<Integer, Integer> gang;
+    private HashMap<PAI, Integer> hand;
+    private HashMap<PAI, Integer> peng;
+    private HashMap<PAI, Integer> gang;
 
     public Player() {
         hand = new HashMap<>();
@@ -18,7 +18,7 @@ public class Player {
         gang = new HashMap<>();
     }
 
-    public void insertHand(int insert) {
+    public void insertHand(PAI insert) {
         Integer count = hand.get(insert);
         if (count != null) {
             hand.put(insert, count + 1);
@@ -28,7 +28,7 @@ public class Player {
 
     }
 
-    public void insertHand(int[] insert) {
+    public void insertHand(PAI[] insert) {
         for (int i = 0; i < insert.length; i++) {
             insertHand(insert[i]);
         }
@@ -39,11 +39,11 @@ public class Player {
         Iterator iter = hand.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            Integer code = (Integer) entry.getKey();
+            PAI pai = (PAI) entry.getKey();
             Integer count = (Integer) entry.getValue();
-            if (code != null && count > 0) {
+            if (pai != null && count > 0) {
                 for (; count > 0; count--) {
-                    list.add(code);
+                    list.add(pai.getCode());
                 }
             }
         }
@@ -55,9 +55,9 @@ public class Player {
         Iterator iter = hand.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            Integer code = (Integer) entry.getKey();
+            PAI pai = (PAI) entry.getKey();
             Integer count = (Integer) entry.getValue();
-            if (code != null && count > 0) {
+            if (pai != null && count > 0) {
                 result += count;
             }
         }

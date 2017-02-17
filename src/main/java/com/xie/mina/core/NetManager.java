@@ -31,6 +31,7 @@ public class NetManager {
 
     public static final int MSG_USER_LOGIN = 20000;
     public static final int MSG_USER_LOGOUT = 20001;
+    public static final int MSG_USER_REGISTER = 20002;
     public static final int MSG_UPDATE_ROOM = 20002;
     public static final int MSG_UPDATE_User = 20002;
     public static final int MSG_UPDATE_BEGINCARD = 20003;
