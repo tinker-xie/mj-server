@@ -10,59 +10,59 @@ import java.util.List;
  */
 public enum PAI {
     @FieldValue("一万")
-    W1(0),
+    B1(0),
     @FieldValue("二万")
-    W2(1),
+    B2(1),
     @FieldValue("三万")
-    W3(2),
+    B3(2),
     @FieldValue("四万")
-    W4(3),
+    B4(3),
     @FieldValue("五万")
-    W5(4),
+    B5(4),
     @FieldValue("六万")
-    W6(5),
+    B6(5),
     @FieldValue("七万")
-    W7(6),
+    B7(6),
     @FieldValue("八万")
-    W8(7),
+    B8(7),
     @FieldValue("九万")
-    W9(8),
+    B9(8),
     @FieldValue("一饼")
-    B1(9),
+    T1(9),
     @FieldValue("二饼")
-    B2(10),
+    T2(10),
     @FieldValue("三饼")
-    B3(11),
+    T3(11),
     @FieldValue("四饼")
-    B4(12),
+    T4(12),
     @FieldValue("五饼")
-    B5(13),
+    T5(13),
     @FieldValue("六饼")
-    B6(14),
+    T6(14),
     @FieldValue("七饼")
-    B7(15),
+    T7(15),
     @FieldValue("八饼")
-    B8(16),
+    T8(16),
     @FieldValue("九饼")
-    B9(17),
+    T9(17),
     @FieldValue("一条")
-    T1(18),
+    W1(18),
     @FieldValue("二条")
-    T2(19),
+    W2(19),
     @FieldValue("三条")
-    T3(20),
+    W3(20),
     @FieldValue("四条")
-    T4(21),
+    W4(21),
     @FieldValue("五条")
-    T5(22),
+    W5(22),
     @FieldValue("六条")
-    T6(23),
+    W6(23),
     @FieldValue("七条")
-    T7(24),
+    W7(24),
     @FieldValue("八饼")
-    T8(25),
+    W8(25),
     @FieldValue("九饼")
-    T9(26),
+    W9(26),
     @FieldValue("东风")
     E(27),
     @FieldValue("南风")

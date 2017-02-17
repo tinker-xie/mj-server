@@ -5,6 +5,7 @@ import com.xie.model.bean.MinaMessage;
 import com.xie.model.bean.User;
 import com.xie.model.response.BaseResponse;
 import com.xie.service.UserService;
+import com.xie.service.core.PAI;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
@@ -56,6 +57,7 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
         // TODO Auto-generated method stub
 
         MinaMessage.Message msg = (MinaMessage.Message) message;
+        System.out.println(msg.getId());
         switch (msg.getId()) {
             case NetManager.MSG_USER_LOGIN:
                 User user = JSON.parseObject(msg.getData(), User.class);
@@ -63,16 +65,26 @@ public class ReceiveMinaHandle extends IoHandlerAdapter {
                 if (user1 != null && user1.getPassword().equals(user.getPassword())) {
                     MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
                     builder.setType(MinaMessage.Type.RESPONSE);
-                    builder.setId(msg.getId());
+                    builder.setId(NetManager.MSG_USER_LOGIN);
                     builder.setData(JSON.toJSONString(BaseResponse.ok()));
                     session.write(builder.build());
                 } else {
                     MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
                     builder.setType(MinaMessage.Type.RESPONSE);
-                    builder.setId(msg.getId());
+                    builder.setId(NetManager.MSG_USER_LOGIN);
                     builder.setData(JSON.toJSONString(BaseResponse.fail()));
                     session.write(builder.build());
                 }
+                break;
+            case NetManager.CMD_BEGIN_CARDS:
+                MinaMessage.Message.Builder builder = MinaMessage.Message.newBuilder();
+                builder.setType(MinaMessage.Type.COMMAND);
+                builder.setId(NetManager.CMD_BEGIN_CARDS);
+                Integer[] data = {PAI.B1.getCode(), PAI.B2.getCode(), PAI.B3.getCode(),
+                        PAI.W1.getCode(), PAI.W1.getCode(), PAI.W1.getCode(),
+                        PAI.T5.getCode(), PAI.T6.getCode(), PAI.T7.getCode(), PAI.ZH.getCode()};
+                builder.setData(JSON.toJSONString(BaseResponse.ok(data)));
+                session.write(builder.build());
                 break;
         }
 
