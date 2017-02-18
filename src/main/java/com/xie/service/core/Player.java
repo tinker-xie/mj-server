@@ -7,28 +7,43 @@ import java.util.*;
  * @Date 17/1/23 下午5:58.
  */
 public class Player {
-    private static final int NULL_CODE = 100;
-    private HashMap<PAI, Integer> hand;
-    private HashMap<PAI, Integer> peng;
-    private HashMap<PAI, Integer> gang;
+    private HashMap<Integer, Integer> hand;
+    private HashMap<Integer, Integer> peng;
+    private HashMap<Integer, Integer> gang;
+    private List<Integer> throwed;
 
     public Player() {
         hand = new HashMap<>();
         peng = new HashMap<>();
         gang = new HashMap<>();
+        throwed = new ArrayList<>();
     }
 
-    public void insertHand(PAI insert) {
+    public void insertHand(Integer insert) {
         Integer count = hand.get(insert);
         if (count != null) {
             hand.put(insert, count + 1);
         } else {
             hand.put(insert, 1);
         }
-
     }
 
-    public void insertHand(PAI[] insert) {
+    public void insertHand(int insert) {
+        Integer count = hand.get(insert);
+        if (count != null) {
+            hand.put(insert, count + 1);
+        } else {
+            hand.put(insert, 1);
+        }
+    }
+
+    public void insertHand(Integer[] insert) {
+        for (int i = 0; i < insert.length; i++) {
+            insertHand(insert[i]);
+        }
+    }
+
+    public void insertHand(int[] insert) {
         for (int i = 0; i < insert.length; i++) {
             insertHand(insert[i]);
         }
@@ -39,11 +54,11 @@ public class Player {
         Iterator iter = hand.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            PAI pai = (PAI) entry.getKey();
+            Integer pai = (Integer) entry.getKey();
             Integer count = (Integer) entry.getValue();
             if (pai != null && count > 0) {
                 for (; count > 0; count--) {
-                    list.add(pai.getCode());
+                    list.add(pai);
                 }
             }
         }
@@ -55,12 +70,92 @@ public class Player {
         Iterator iter = hand.entrySet().iterator();
         while (iter.hasNext()) {
             Map.Entry entry = (Map.Entry) iter.next();
-            PAI pai = (PAI) entry.getKey();
+            Integer pai = (Integer) entry.getKey();
             Integer count = (Integer) entry.getValue();
             if (pai != null && count > 0) {
                 result += count;
             }
         }
         return result;
+    }
+
+    public boolean handThrow(int pai) {
+        Integer count = hand.get(pai);
+        if (count != null) {
+            int remain = count - 1;
+            hand.put(pai, remain);
+            throwed.add(pai);
+            if (remain <= 0) {
+                hand.remove(pai);
+            }
+            return true;
+
+        }
+        return false;
+    }
+
+    public boolean peng(int pai) {
+        Integer count = hand.get(pai);
+        if (count != null && count > 1) {
+            int remain = count - 2;
+            hand.put(pai, remain);
+            peng.put(pai, 3);
+            if (remain <= 0) {
+                hand.remove(pai);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean gang(int pai) {
+        Integer count = hand.get(pai);
+        if (count != null && count > 2) {
+            int remain = count - 3;
+            hand.put(pai, remain);
+            peng.put(pai, 4);
+            if (remain <= 0) {
+                hand.remove(pai);
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    public boolean canPeng(int pai) {
+        Integer count = hand.get(pai);
+        if (count != null && count > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canGang(int pai) {
+        Integer count = hand.get(pai);
+        if (count != null && count == 3) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public int getNextTest(int size) {
+        int result = GameUtils.NOT_PAI;
+        Iterator iter = hand.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Integer pai = (Integer) entry.getKey();
+            Integer count = (Integer) entry.getValue();
+            if (pai != null && count == size) {
+                result = pai;
+                break;
+            }
+        }
+        if (result != GameUtils.NOT_PAI) {
+            return result;
+        } else {
+            return getNextTest(size - 1);
+        }
     }
 }

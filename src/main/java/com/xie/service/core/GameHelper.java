@@ -298,6 +298,9 @@ public class GameHelper {
             case 33:
                 result = "白板";
                 break;
+            case GameUtils.NOT_PAI:
+                result = "";
+                break;
         }
         return result;
     }

@@ -11,6 +11,16 @@ import java.util.TreeMap;
 public class GameUtils {
     public final static int TOTAL = 34;
     public final static int SYS = -1;
+    public final static int NOT_PAI = -1;
+
+
+    public final static int PLAYER_0 = 0;
+    public final static int PLAYER_1 = 1;
+    public final static int PLAYER_2 = 2;
+    public final static int PLAYER_3 = 3;
+
+    public final static int PENG_GANG_NONE_USER = -1;
+    public final static int PENG_GANG_NONE = -1;
 
     static final int[] n_zero;
     static final TreeMap<Integer, int[]> tbl;
@@ -116,7 +126,7 @@ public class GameUtils {
      * @author xiejiangchu
      * @Copyright (c) 2017, Lianjia All Rights Reserved.
      */
-    private static void sort(int[] a, int low, int high) {
+    public static void sort(int[] a, int low, int high) {
         int start = low;
         int end = high;
         int key = a[low];

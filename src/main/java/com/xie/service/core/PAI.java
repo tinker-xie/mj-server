@@ -6,6 +6,8 @@ import com.xie.annotation.FieldValue;
  * Created by xie on 16/8/23.
  */
 public enum PAI {
+    START(0),
+    END(33),
     @FieldValue("一万")
     B1(0),
     @FieldValue("二万")
@@ -81,15 +83,6 @@ public enum PAI {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-
     public static PAI valueOf(int code) {
         switch (code) {
             case 0:
@@ -162,6 +155,14 @@ public enum PAI {
                 return BA;
         }
         return null;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
 
