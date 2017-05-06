@@ -21,6 +21,8 @@ public class GameUtils {
 
     public final static int PENG_GANG_NONE_USER = -1;
     public final static int PENG_GANG_NONE = -1;
+    public final static int HU_ANGANG_NONE = -1;
+    public final static int HU_ANGANG_NONE_USER = -1;
 
     static final int[] n_zero;
     static final TreeMap<Integer, int[]> tbl;
@@ -30,6 +32,22 @@ public class GameUtils {
         Arrays.fill(n_zero, 0);
         tbl = new TreeMap<Integer, int[]>();
         init(tbl);
+    }
+
+    public static String getUsername(int index) {
+        switch (index) {
+            case 0:
+                return "玩家1";
+            case 1:
+                return "玩家2";
+            case 2:
+                return "玩家3";
+            case 3:
+                return "玩家4";
+            case SYS:
+                return "系统";
+        }
+        return "";
     }
 
     /**
@@ -60,6 +78,33 @@ public class GameUtils {
             in[cbPosition] = in[r - 1];
         } while (cbRandCount < count);
         return out;
+    }
+
+    public static boolean analysing(int[] src) {
+
+        System.out.println("---------------------------------           【和牌判断】           ----------------------------");
+        for (int i = 0; i < src.length; i++) {
+            for (int k = 0; k < src[i]; k++) {
+                System.out.print(GameHelper.getName(i) + ",");
+            }
+        }
+        int[] out = assemble(src);
+        boolean flag = false;
+        for (int i = 0; i < out.length; i++) {
+            if (agari(out[i]) != null) {
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            System.out.println("【和】");
+            return true;
+        } else {
+            System.out.println("【不和】");
+        }
+        System.out.println();
+
+        return false;
     }
 
 
@@ -116,7 +161,6 @@ public class GameUtils {
     /**
      * 快速排序
      *
-     * @param null
      * @return
      * @nodoc
      * @summary
@@ -153,6 +197,10 @@ public class GameUtils {
         //递归
         if (start > low) sort(a, low, start - 1);//左边序列。第一个索引位置到关键值索引-1
         if (end < high) sort(a, end + 1, high);//右边序列。从关键值索引+1到最后一个
+    }
+
+    private static int[] agari(int key) {
+        return tbl.get(key);
     }
 
     private static int calc_key(int[] n) {
@@ -214,116 +262,6 @@ public class GameUtils {
             }
         }
         return x;
-    }
-
-
-    public static String getName(int code) {
-        String result = "";
-        switch (code) {
-            case 0:
-                result = "一万";
-                break;
-            case 1:
-                result = "二万";
-                break;
-            case 2:
-                result = "三万";
-                break;
-            case 3:
-                result = "四万";
-                break;
-            case 4:
-                result = "五万";
-                break;
-            case 5:
-                result = "六万";
-                break;
-            case 6:
-                result = "七万";
-                break;
-            case 7:
-                result = "八万";
-                break;
-            case 8:
-                result = "九万";
-                break;
-            case 9:
-                result = "一饼";
-                break;
-            case 10:
-                result = "二饼";
-                break;
-            case 11:
-                result = "三饼";
-                break;
-            case 12:
-                result = "四饼";
-                break;
-            case 13:
-                result = "五饼";
-                break;
-            case 14:
-                result = "六饼";
-                break;
-            case 15:
-                result = "七饼";
-                break;
-            case 16:
-                result = "八饼";
-                break;
-            case 17:
-                result = "九饼";
-                break;
-            case 18:
-                result = "一条";
-                break;
-            case 19:
-                result = "二条";
-                break;
-            case 20:
-                result = "三条";
-                break;
-            case 21:
-                result = "四条";
-                break;
-            case 22:
-                result = "五条";
-                break;
-            case 23:
-                result = "六条";
-                break;
-            case 24:
-                result = "七条";
-                break;
-            case 25:
-                result = "八条";
-                break;
-            case 26:
-                result = "九条";
-                break;
-            case 27:
-                result = "东风";
-                break;
-            case 28:
-                result = "南风";
-                break;
-            case 29:
-                result = "西风";
-                break;
-            case 30:
-                result = "北风";
-                break;
-            case 31:
-                result = "红中";
-                break;
-            case 32:
-                result = "发财";
-                break;
-            case 33:
-                result = "白板";
-                break;
-        }
-        return result;
     }
 
 

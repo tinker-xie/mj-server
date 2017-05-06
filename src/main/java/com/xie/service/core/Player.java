@@ -62,6 +62,7 @@ public class Player {
                 }
             }
         }
+        Collections.sort(list);
         return list;
     }
 
@@ -113,11 +114,31 @@ public class Player {
         if (count != null && count > 2) {
             int remain = count - 3;
             hand.put(pai, remain);
-            peng.put(pai, 4);
+            gang.put(pai, 4);
             if (remain <= 0) {
                 hand.remove(pai);
             }
             return true;
+        }
+        return false;
+    }
+
+    public boolean anGang() {
+
+        Iterator iter = hand.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Integer pai = (Integer) entry.getKey();
+            Integer count = (Integer) entry.getValue();
+            if (pai != null && count == 4) {
+                int remain = count - 3;
+                hand.put(pai, remain);
+                gang.put(pai, 4);
+                if (remain <= 0) {
+                    hand.remove(pai);
+                }
+                return true;
+            }
         }
         return false;
     }
@@ -137,6 +158,33 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    public boolean canAnGang() {
+        Iterator iter = hand.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Integer pai = (Integer) entry.getKey();
+            Integer count = (Integer) entry.getValue();
+            if (pai != null && count == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean canHu() {
+        int[] src = new int[PAI.END.getCode() + 1];
+        Iterator iter = hand.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Integer pai = (Integer) entry.getKey();
+            Integer count = (Integer) entry.getValue();
+            if (pai != null && count > 0) {
+                src[pai] = count;
+            }
+        }
+        return GameUtils.analysing(src);
     }
 
 

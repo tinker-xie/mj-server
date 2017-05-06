@@ -25,7 +25,7 @@ public class Room {
     /**
      * 游戏参数
      */
-    private int game_current_step = 0;
+    private int game_current_step = -1;
     private int game_current_action;
     private int game_current_person;
     private int game_current_pai;
@@ -44,27 +44,30 @@ public class Room {
         paiQueue = new ConcurrentLinkedDeque<>();
         players = new ArrayList<>(game_person_number);
 
-        setResult(game_current_step, GameUtils.SYS, Action.分牌.getCode(), GameUtils.NOT_PAI, GameUtils.SYS, Action.分牌.getCode(), GameUtils.NOT_PAI);
+        setResult(GameUtils.SYS, Action.发牌.getCode(), GameUtils.NOT_PAI, GameUtils.SYS, Action.发牌.getCode(), GameUtils.NOT_PAI);
 
         //初始化分牌
-        initTest();
+        init();
 
         //下一步
-        setResult(game_current_step + 1, GameUtils.SYS, Action.分牌.getCode(), GameUtils.NOT_PAI, GameUtils.PLAYER_0, Action.出牌.getCode(), GameUtils.NOT_PAI);
+        int[] result = canHuOrAnGang(GameUtils.PLAYER_0);
+        if (result[0] == GameUtils.HU_ANGANG_NONE) {
+            setResult(GameUtils.SYS, Action.发牌.getCode(), GameUtils.NOT_PAI,
+                    GameUtils.PLAYER_0, Action.出牌.getCode(), GameUtils.NOT_PAI);
+        } else {
+            setResult(GameUtils.SYS, Action.发牌.getCode(), GameUtils.NOT_PAI,
+                    result[1], result[0], GameUtils.NOT_PAI);
+        }
     }
 
     public static void main(String[] args) {
 
-        Room game = new Room(3, 2);
+        Room game = new Room(4, 2);
         game.printCurrent();
 
-        System.out.println("\n");
-
-        game.nextStep(Action.出牌.getCode(), GameUtils.NOT_PAI);
-        game.printCurrent();
         System.out.println("\n");
         boolean next = true;
-        for (int i = 0; i < 18; i++) {
+        for (int i = 0; i < 300; i++) {
             next = game.nextStepTest();
             if (!next) {
                 break;
@@ -73,6 +76,10 @@ public class Room {
             System.out.println("\n");
         }
 
+    }
+
+    public int getPaiRemain() {
+        return paiQueue.size();
     }
 
     private void initTest() {
@@ -87,7 +94,7 @@ public class Room {
         int i = 0;
         for (i = 0; i < game_person_number; i++) {
             if (i == 0) {
-                int[] first = {0, 0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5};
+                int[] first = {0, 0, 1, 1, 2, 2, 3, 3, 3, 3, 4, 5, 5, 5};
                 Player player = new Player();
                 GameUtils.sort(first, 0, first.length - 1);
                 player.insertHand(first);
@@ -143,10 +150,10 @@ public class Room {
         }
     }
 
-    private void setResult(int game_current_step, int game_current_person, int game_current_action, int game_current_pai,
+    private void setResult(int game_current_person, int game_current_action, int game_current_pai,
                            int game_next_person, int game_next_action, int game_next_pai) {
 
-        this.game_current_step = game_current_step;
+        this.game_current_step = game_current_step + 1;
         this.game_current_action = game_current_action;
         this.game_current_person = game_current_person;
         this.game_current_pai = game_current_pai;
@@ -169,9 +176,17 @@ public class Room {
                 if (action != Action.杠.getCode() && action != Action.碰.getCode() && action != Action.不碰杠.getCode()) {
                     return;
                 }
+            } else if (game_next_action == Action.判和暗杠.getCode()) {
+                if (action != Action.和.getCode() && action != Action.暗杠.getCode() && action != Action.不和暗杠.getCode()) {
+                    return;
+                }
             } else if (game_next_action == Action.判碰.getCode() && action != Action.碰.getCode() && action != Action.不碰杠.getCode()) {
                 return;
             } else if (game_next_action == Action.判杠.getCode() && action != Action.杠.getCode() && action != Action.不碰杠.getCode()) {
+                return;
+            } else if (game_next_action == Action.判暗杠.getCode() && action != Action.暗杠.getCode() && action != Action.不和暗杠.getCode()) {
+                return;
+            } else if (game_next_action == Action.判和.getCode() && action != Action.和.getCode() && action != Action.不和暗杠.getCode()) {
                 return;
             }
         }
@@ -182,33 +197,49 @@ public class Room {
                 //下一步
                 int[] result = checkPengOrGang(pai);
                 if (result[0] == GameUtils.PENG_GANG_NONE) {
-                    setResult(game_current_step + 1, game_next_person, action, pai,
+                    setResult(game_next_person, action, pai,
                             getNextPerson(game_next_person), Action.摸牌.getCode(), GameUtils.NOT_PAI);
                 } else {
-                    setResult(game_current_step + 1, game_next_person, action, pai,
+                    setResult(game_next_person, action, pai,
                             result[1], result[0], GameUtils.NOT_PAI);
                 }
             } else if (action == Action.摸牌.getCode()) {
                 Integer next = paiQueue.poll();
                 if (null == next) {
-                    setResult(game_current_step + 1, game_next_person, action, GameUtils.NOT_PAI,
+                    setResult(game_next_person, action, GameUtils.NOT_PAI,
                             GameUtils.SYS, Action.流局.getCode(), GameUtils.NOT_PAI);
                 } else {
                     players.get(game_next_person).insertHand(next);
-                    setResult(game_current_step + 1, game_next_person, action, next,
-                            game_next_person, Action.出牌.getCode(), GameUtils.NOT_PAI);
+                    int[] result = canHuOrAnGang(game_next_person);
+                    if (result[0] == GameUtils.HU_ANGANG_NONE) {
+                        setResult(game_next_person, action, next,
+                                game_next_person, Action.出牌.getCode(), GameUtils.NOT_PAI);
+                    } else {
+                        setResult(game_next_person, action, next,
+                                result[1], result[0], next);
+                    }
                 }
             } else if (action == Action.不碰杠.getCode()) {
-                setResult(game_current_step + 1, game_next_person, action, pai,
+                setResult(game_next_person, action, pai,
                         getNextPerson(game_next_person), Action.摸牌.getCode(), GameUtils.NOT_PAI);
             } else if (action == Action.杠.getCode()) {
                 players.get(game_next_person).gang(pai);
-                setResult(game_current_step + 1, game_next_person, action, pai,
+                setResult(game_next_person, action, pai,
                         game_next_person, Action.摸牌.getCode(), GameUtils.NOT_PAI);
             } else if (action == Action.碰.getCode()) {
                 players.get(game_next_person).peng(pai);
-                setResult(game_current_step + 1, game_next_person, action, pai,
+                setResult(game_next_person, action, pai,
                         game_next_person, Action.出牌.getCode(), GameUtils.NOT_PAI);
+            } else if (action == Action.不和暗杠.getCode()) {
+                setResult(game_next_person, action, pai,
+                        game_next_person, Action.出牌.getCode(), GameUtils.NOT_PAI);
+            } else if (action == Action.暗杠.getCode()) {
+                players.get(game_next_person).anGang();
+                setResult(game_next_person, action, pai,
+                        game_next_person, Action.摸牌.getCode(), GameUtils.NOT_PAI);
+            } else if (action == Action.和.getCode()) {
+                setResult(game_next_person, action, pai,
+                        GameUtils.SYS, Action.和.getCode(), GameUtils.NOT_PAI);
             }
 
         }
@@ -223,10 +254,30 @@ public class Room {
         return false;
     }
 
+    private int[] canHuOrAnGang(int index) {
+        int[] result = new int[2];
+        result[0] = GameUtils.HU_ANGANG_NONE;
+        result[1] = GameUtils.HU_ANGANG_NONE_USER;
+        boolean hu = players.get(index).canHu();
+        boolean angang = players.get(index).canAnGang();
+        if (hu && angang) {
+            result[0] = Action.判和暗杠.getCode();
+            result[1] = index;
+        } else if (hu) {
+            result[0] = Action.判和.getCode();
+            result[1] = index;
+        } else if (angang) {
+            result[0] = Action.判暗杠.getCode();
+            result[1] = index;
+        }
+        return result;
+    }
+
     private int[] checkPengOrGang(int pai) {
         int[] result = new int[2];
         result[0] = GameUtils.PENG_GANG_NONE;
         result[1] = GameUtils.PENG_GANG_NONE_USER;
+
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).canPeng(pai) && players.get(i).canGang(pai)) {
                 result[0] = Action.判碰杠.getCode();
@@ -245,8 +296,7 @@ public class Room {
     }
 
     private int getNextPerson(int index) {
-        int next = index + 1;
-        return next % game_person_number;
+        return (index + 1) % game_person_number;
     }
 
     public void printCurrent() {
@@ -267,10 +317,10 @@ public class Room {
         }
 
         System.out.print("当前步数" + game_current_step + " | ");
-        System.out.print("当前玩家(" + game_current_person + ") " + Action.valueOf(game_current_action) + "(" + GameHelper.getName(game_current_pai) + ")");
+        System.out.print("当前玩家(" + GameUtils.getUsername(game_current_person) + ") " + Action.valueOf(game_current_action) + "(" + GameHelper.getName(game_current_pai) + ")");
         System.out.print("  |  ");
 
-        System.out.print("下一玩家(" + game_next_person + ") " + Action.valueOf(game_next_action) + "(" + GameHelper.getName(game_next_pai) + ")");
+        System.out.print("下一玩家(" + GameUtils.getUsername(game_next_person) + ") " + Action.valueOf(game_next_action) + "(" + GameHelper.getName(game_next_pai) + ")");
         System.out.print("  |  ");
     }
 
@@ -285,11 +335,19 @@ public class Room {
             nextStep(Action.杠.getCode(), game_current_pai);
         } else if (game_next_action == Action.判碰杠.getCode()) {
             nextStep(Action.杠.getCode(), game_current_pai);
+        } else if (game_next_action == Action.判暗杠.getCode()) {
+            nextStep(Action.暗杠.getCode(), game_current_pai);
+        } else if (game_next_action == Action.判和暗杠.getCode()) {
+            nextStep(Action.和.getCode(), game_current_pai);
+        } else if (game_next_action == Action.判和.getCode()) {
+            nextStep(Action.和.getCode(), game_current_pai);
         } else if (game_next_action == Action.流局.getCode()) {
-            System.out.println("游戏结束");
+            System.out.println("游戏结束 --  流局");
+            return false;
+        } else if (game_next_action == Action.和.getCode()) {
+            System.out.println("游戏结束 --  和牌");
             return false;
         }
         return true;
     }
-
 }

@@ -3,8 +3,8 @@ package com.xie.service.core;
 import com.xie.annotation.FieldValue;
 
 public enum Action {
-    @FieldValue("分牌")
-    分牌(00),
+    @FieldValue("发牌")
+    发牌(00),
 
     @FieldValue("出牌")
     出牌(10),
@@ -24,13 +24,27 @@ public enum Action {
 
     @FieldValue("判碰杠")
     判碰杠(42),
+
     @FieldValue("不碰杠")
     不碰杠(43),
 
-    @FieldValue("胡")
-    胡(50),
-    @FieldValue("判胡")
-    判胡(51),
+    @FieldValue("判暗杠")
+    判暗杠(44),
+    @FieldValue("暗杠")
+    暗杠(45),
+
+
+    @FieldValue("判和暗杠")
+    判和暗杠(47),
+
+
+    @FieldValue("和")
+    和(50),
+    @FieldValue("判和")
+    判和(51),
+
+    @FieldValue("不和暗杠")
+    不和暗杠(55),
 
     @FieldValue("抓鸟")
     抓鸟(60),
@@ -48,7 +62,7 @@ public enum Action {
     public static Action valueOf(int code) {
         switch (code) {
             case 00:
-                return 分牌;
+                return 发牌;
             case 10:
                 return 出牌;
             case 20:
@@ -65,10 +79,20 @@ public enum Action {
                 return 判碰杠;
             case 43:
                 return 不碰杠;
+
+            case 44:
+                return 判暗杠;
+            case 45:
+                return 暗杠;
+            case 47:
+                return 判和暗杠;
+
             case 50:
-                return 胡;
+                return 和;
             case 51:
-                return 判胡;
+                return 判和;
+            case 55:
+                return 不和暗杠;
             case 60:
                 return 抓鸟;
             case 90:
